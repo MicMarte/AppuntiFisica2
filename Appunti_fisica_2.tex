@@ -1,11 +1,12 @@
 \documentclass[a4paper,12pt,titlepage,openany]{book}
 \usepackage[utf8]{inputenc}
 \usepackage[italian]{babel}
-\usepackage[noadvisor]{frontespizio}
+\usepackage[]{frontespizio}
 \usepackage{amsmath}
 \usepackage{amsthm}
 \usepackage{amssymb}
 \usepackage{mathptmx}  % Font
+\usepackage{relsize}   % Displaystyle for math symbols
 \usepackage{dashbox}   % Dashed box for math equations
 \usepackage[linktocpage=true,hyperfootnotes=false,colorlinks=true,linkcolor=orange]{hyperref}  % Link nell'indice
 \usepackage{microtype} % migliora l'uso di spazi e rientri
@@ -13,6 +14,9 @@
 \usepackage{setspace}  % Permette di personalizzare l'interlinea
 \usepackage{fancyhdr}  % Gestione headings
 \usepackage{graphicx}  % Permette di includere figure
+\usepackage{tikz}      % Permette di disegnare
+\usepackage{wrapfig}
+\usetikzlibrary{arrows}
 \usepackage{booktabs}  % Creazione tabelle
 \usepackage{caption}   % Permette la personalizzazione delle didascalie e la loro aggiunta in tabelle
 \usepackage[wide]{sidecap}  % Permette di mettere didascalie laterali a figure e tabelle
@@ -40,10 +44,11 @@
 % Other little adjustments
 \renewcommand\thefootnote{\textcolor{black}{\arabic{footnote}}}
 \renewcommand\labelitemi{\footnotesize\NibSolidRight}
-\newcommand\dboxed[1]{\dbox{\ensuremath{#1}}}  % Allow dbox to be used in math env
+\newcommand\dboxed[1]{\mathlarger{\dbox{\ensuremath{#1}}}}  % Allow dbox to be used in math env
 \linespread{1.2}
 \captionsetup{format=hang, labelfont={sf,bf}}
 \sidecaptionvpos{figure}{c}  % Side caption centered to image
+\newcommand{\parallels}{\mathbin{\!/\mkern-5mu/\!}} % Parallel symbol
 
 \begin{document}
 	\begin{frontespizio}
@@ -52,12 +57,13 @@
         \Dipartimento{Informatica}
 		\Corso[Laurea Triennale]{Informatica}
 		\Annoaccademico{2017--2018}
-		\Titoletto{Progetto di \LaTeX}
 		\Titolo{Appunti di fisica II}
 		\Sottotitolo{Riassunto del corso di elettromagnetismo\\ 
                      e raccolta di formule utili per l'esame}
-		\NCandidato{Studente}
-        \Candidato[VR398611]{Michele Martini}
+		\NCandidato{A cura di}
+        \Candidato{Michele Martini}
+        \Relatore{Prof. Claudia Daffara}
+        \NRelatore{Corso tenuto da}{}
 	\end{frontespizio}
     
     \frontmatter
@@ -200,7 +206,13 @@
             \end{figure}
             
             \subsection{Energia e potenziale elettrostatico}
-            La forza elettrostatica è \emph{conservativa}, quindi: $\exists\,U\mid W=-\Delta U$.\\
+            La forza elettrostatica è \emph{conservativa}, quindi:
+            \begin{itemize}
+                \item{$\exists\,U\mid W=-\Delta U$;}
+                \item{il lavoro che compie lungo un qualsiasi percorso chiuso è nullo;} 
+                \item{il lavoro per spostare un corpo da un punto A ad un punto B dipende
+                      solo dalle posizioni iniziale e finali, non dalla traiettoria.}
+            \end{itemize}
             Posta una carica positiva $Q$ nell'origine e una carica $q_0$ in un punto A, il lavoro per spostare
             $q_0$ da A ad un punto B e l'energia elettrostatica delle due cariche si calcolano come segue:
             \begin{gather}
@@ -215,14 +227,261 @@
             \notag\\[1ex]
             \dboxed{U = \frac{q_0q_1}{4\pi\epsilon_0r} + \text{cost}}
             \end{gather}
+
+
+            Se poniamo $U(\infty) = 0$, allora $U = \Delta U = U(\vec{r})-U(\infty)$.\\
+            Perciò, ricordando la prima delle 3 definizioni di forza conservativa, possiamo definire $U$ come:
+            \begin{itemize}
+                \item{il lavoro del campo necessario per allontanare le cariche a distanza infinita;}
+                \item{l'opposto del lavoro necessario a una forza esterna per portare una carica da distanza infinita dentro al sistema.}
+            \end{itemize}
+            
+            \bigskip
+            \textbf{Riassumendo}, da evidenze sperimentali siamo riusciti a trovare una forza (\emph{Forza di Coulomb} $F_{el.st.}$), dalla quale abbiamo astratto
+            un'ulteriore grandezza, detta \emph{campo elettrostatico} $E_{el.st.}$, che non dipende dalla carica interessata dalla forza, bensì solo dalla
+            sua posizione. In seguito, abbiamo fornito la definizione di \emph{energia potenziale} $U$. Analogamente, possiamo dunque astrarre la carica
+            dalla formula dell'energia potenziale e definire una nuova proprietà dello spazio, il \emph{potenziale del campo elettrostatico}.
+            
+            
+            \begin{gather*}
+                \vec{F}_{el.st.} \;\longrightarrow\; U\\
+                \Downarrow \hspace{4.5em} \Downarrow\\
+                \vec{E}_{el.st.}(\vec{r}) \qquad V(\vec{r})
+            \end{gather*}
+            
+            
             \begin{definizione}[Potenziale del campo elettrostatico]
                 Il potenziale elettrostatico si definisce come l'energia potenziale elettrostatica per unita di carica.
                 La sua unità di misura è il \emph{Volt} $[V]$ ed il suo valore è definito a meno di una costante.
                 \begin{equation}
-                    \boxed{V\triangleq U/q}\\
+                \boxed{V\triangleq U/q}\\
                 \end{equation}
             \end{definizione}
-    
+            
+            \noindent Data la definizione di potenziale, si evince facilmente quanto segue:
+            \begin{equation}\label{eqn:diff_potenziale}
+                \Delta V = V_B - V_A = -\int_A^B \vec{E}\cdot d\vec{r} = -W
+                \mbox{\footnotesize per carica di campo unitaria da A a B}
+            \end{equation}
+            Il potenziale elettrostatico è definito a meno di una costante. Perciò, grazie all'equazione
+            \ref{eqn:diff_potenziale}, come abbiamo già visto per l'energia potenziale, ponendo $V(\infty) = 0$
+            possiamo definire $V(\vec{r})$ come il lavoro necessario ad una forza
+            esterna al campo per portare una carica \emph{unitaria} (\textbf{non} "di prova") da distanza infinita dentro al sistema.
+            
+            \begin{equation*}
+                V(r) = -\int_\infty^r \frac{q}{4\pi \epsilon_0 r^2}dr = \dboxed{\frac{q}{4\pi \epsilon_0 r}}
+            \end{equation*}
+            Il campo elettrostatico punta \emph{sempre} verso potenziali \emph{decrescenti}.\\
+
+            Vediamo come calcolare il potenziale in $\vec{r}$ quando abbiamo una \emph{distribuzione discreta}
+            ($\,{q_i}$, con $i=1,2,\dots,N\,$).\\[1em]
+            
+            
+            \begin{tikzpicture}
+                % Assi
+                \draw [thick,->] (0,0) -- (0,6) node[anchor=north east] {z};
+                \draw [thick,->] (0,0) -- (6,0) node[anchor=north east] {y};
+                \draw [thick,->] (0,0) -- (-3,-3) node[anchor=north west] {x};
+                % Punti
+                \filldraw [red] (4.5, 4.5) circle (2.5pt) node[anchor=south west] {r};
+                \filldraw [gray] (-0.5, 4.5) circle (2pt) node[anchor=east] {$q_1$};
+                \filldraw [gray] (-0.5, 2) circle (2pt) node[anchor=east] {$q_2$};
+                \filldraw [gray] (1, 3.5) circle (2pt) node[anchor=east] {$q_3$};
+                \filldraw [gray] (2, -1) circle (2pt) node[anchor=east] {$q_4$};
+                \filldraw [gray] (4, 2.5) circle (2pt) node[anchor=north west] {$q_5$};
+                % Vettori congiungenti
+                \draw [gray,-stealth] (-0.5, 4.5) -- (4.5,4.5) node[midway,above,sloped] {$\vec{r_1}$};
+                \draw [gray,-stealth] (-0.5, 2) -- (4.5,4.5);
+                \draw [gray,-stealth] (1, 3.5) -- (4.5,4.5);
+                \draw [gray,-stealth] (2, -1) -- (4.5,4.5);
+                \draw [gray,-stealth] (4, 2.5) -- (4.5,4.5);
+            \end{tikzpicture}
+            
+            \noindent
+            Dato che $\vec{E} = \sum \vec{E}_i$, possiamo facilmente notare che $V=\sum V_i$.\\
+            Perciò, con un sistema di $N$ cariche puntiformi, otteniamo:
+            \begin{equation}
+                V(r) = \frac{1}{4\pi\epsilon_0} \,\sum\frac{q_i}{r_i}
+            \end{equation}
+            
+            Se passiamo invece da una distribuzione discreta ad una \emph{distribuzione continua},
+            dobbiamo distinguere 3 tipi di distribuzioni.
+            \begin{gather*}
+                \text{Prima di tutto, ricordando che } \sum \rightarrow \int \text{, possiamo dire:}\\[1em]
+                V(r)=\frac{q}{4\pi\epsilon_0}\,\int\frac{\mathop{dq}}{r}\\
+                q_i\longmapsto \mathop{dq} \longrightarrow
+                \lambda\mathop{dl}\,|\,\sigma\mathop{dS}\,|\,\rho\mathop{dV}\\[1em]
+                \text{Di conseguenza il potenziale si calcolerà come segue:}\\
+                \lambda\mathop{dl} \Rightarrow
+                V(r)=\frac{q}{4\pi\epsilon_0}\,\int\frac{\lambda}{r}\mathop{dl}
+                \quad\text{\small (distribuzione lineare)}\\
+                \sigma\mathop{dS} \Rightarrow
+                V(r)=\frac{q}{4\pi\epsilon_0}\,\int\frac{\sigma}{r}\mathop{dS}
+                \quad\text{\small (distribuzione superficiale)}\\
+                \rho\mathop{dV} \Rightarrow
+                V(r)=\frac{q}{4\pi\epsilon_0}\,\int\frac{\rho}{r}\mathop{dV}
+                \quad\text{\small (distribuzione volumetrica)}\\
+            \end{gather*}
+            
+            \subsection{Teorema di Gauss}
+            Prima di poter affrontare questo importante teorema, che useremo poi nel 90\% degli
+            esercizi, ci occorrono alcune nozioni di base:
+            \begin{itemize}
+                \item{flusso attraverso una superficie;}
+                \item{angolo solido.}
+            \end{itemize}
+            Il \emph{flusso elementare} del campo attraverso $\mathop{dS}$ è definito come segue:
+            \begin{equation*}
+                \mathop{d\phi} = \vec{E}\cdot\mathop{d\vec{S}}
+            \end{equation*}
+            \begin{center}
+                (ricordando che $\mathop{d\vec{S}} = \mathop{dS}\cdot\hat{n}$)
+            \end{center}
+            
+            Il valore del flusso dipende dalla direzione del campo elettrico e della superficie,
+            ovvero della sua normale, ed in particolare dall'angolo che si forma tra essi.\\
+            Il flusso avrà perciò il seguente valore:
+            \begin{itemize}
+                \item{
+                    Superficie perpendicolare al campo ($\vec{E}\parallels\hat{n}$):\\
+                    \begin{center}
+                        \begin{tikzpicture}
+                        \draw [-stealth] (0,0.5) -- (1,0.5) node[midway, above, sloped] {$\vec{E}$};
+                        \draw [-stealth] (0,0.3) -- (1,0.3);
+                        \draw [-stealth] (0,0.1) -- (1,0.1);
+                        \draw (1.2, 0.7) -- (1.2, -0.2);
+                        \draw (1.2, 0.7) -- (1.5, 0.8);
+                        \draw (1.2, -0.2) -- (1.5, -0.1);
+                        \draw (1.5, 0.8) -- (1.5, -0.1);
+                        \draw [-stealth] (1.35,0.3) -- (2, 0.3) node[anchor=south west] {$\hat{n}$};
+                        \end{tikzpicture}
+                    \end{center}
+                    \begin{equation*}
+                        \mathop{d\phi} = \vec{E}\cdot\mathop{d\vec{S}} = E\cdot\mathop{dS}
+                    \end{equation*}
+                }
+                \item{
+                    Superficie parallela al campo ($\vec{E}\perp\hat{n}$):\\
+                    \begin{center}
+                        \begin{tikzpicture}
+                        \draw [-stealth] (0,0.5) -- (1,0.5) node[midway, above, sloped] {$\vec{E}$};
+                        \draw [-stealth] (0,0.3) -- (1,0.3);
+                        \draw [-stealth] (0,0.1) -- (1,0.1);
+                        \draw (1.2, 0.2) -- (1.4, 0.5);
+                        \draw (1.2, 0.2) -- (2, 0.2);
+                        \draw (1.4, 0.5) -- (2.2, 0.5);
+                        \draw (2, 0.2) -- (2.2, 0.5);
+                        \draw [-stealth] (1.7,0.35) -- (1.7, 0.7) node[anchor=south west] {$\hat{n}$};
+                        \end{tikzpicture}
+                    \end{center}
+                    \begin{equation*}
+                    \mathop{d\phi} = \vec{E}\cdot\mathop{d\vec{S}} = 0
+                    \end{equation*}
+                }
+                \item{
+                    Superficie forma un angolo $\theta\neq k\frac{\pi}{2}$ con il campo:\\
+                    \begin{center}
+                        \begin{tikzpicture}
+                        \draw [-stealth] (0,0.5) -- (1,0.5) node[midway, above, sloped] {$\vec{E}$};
+                        \draw [-stealth] (0,0.3) -- (1,0.3);
+                        \draw [-stealth] (0,0.1) -- (1,0.1);
+                        \draw (1.2, 0.7) -- (1.0, -0.2);
+                        \draw (1.2, 0.7) -- (1.6, 0.7);
+                        \draw (1, -0.2) -- (1.4, -0.2);
+                        \draw (1.6, 0.7) -- (1.4, -0.2);
+                        \draw [dashed] (1.3,0.3) -- (2.2, 0.3);
+                        \draw [-stealth] (1.3,0.3) -- (2.2, -0.1) node[anchor=north east] {$\hat{n}$};
+                        \draw (1.9,0.05) arc (-15:0:1) node[midway, anchor=west] {\scriptsize $\theta$};
+                        \end{tikzpicture}
+                    \end{center}
+                    \begin{equation*}
+                    \mathop{d\phi} = \vec{E}\cdot\mathop{d\vec{S}} = E\cdot\mathop{dS}\cdot\cos\theta
+                    \end{equation*}
+                }
+            \end{itemize}
+        
+            Da queste osservazioni possiamo finalmente arrivare ad una definizione più precisa del flusso.
+            \begin{definizione}[Flusso del campo elettrico]
+                Il flusso del campo elettrico attraverso una superficie S è dato da
+                \begin{equation}
+                    \phi(\vec{E}) = \int\limits_{S} \vec{E}\cdot\mathop{d\vec{S}} \qquad [\phi] = V\cdot m
+                \end{equation}
+            \end{definizione}
+            
+            \noindent
+            Prendiamo ora in considerazione una superficie chiusa qualsiasi $S$ al cui interno poniamo una
+            carica puntiforme $q$. Guardando una porzione infinitesima di $S$, calcoliamo che
+            il flusso attraverso essa è il seguente:
+            \begin{equation}\label{eqn:angolo_solido}
+                \mathop{d\phi} = \vec{E}\cdot\mathop{d\vec{S}} =
+                \frac{q}{4\pi\epsilon_0r^2}\cdot\vec{u}_r\cdot\hat{n}\cdot\mathop{dS} \Rightarrow
+                \frac{q}{4\pi\epsilon_0}\cdot
+                \dboxed{\frac{\vec{u}_r\cdot\hat{n}\cdot\mathop{dS}}{r^2}}
+            \end{equation}
+            La parte di formula evidenzata nella \ref{eqn:angolo_solido} indica l'\emph{angolo solido}
+            $\mathop{d\Omega}$, ed è importante in quanto il flusso dipende dall'angolo solido,
+            \emph{non} dalla superficie.
+            
+            \begin{equation}\label{eqn:flusso_sup_chiusa}
+                \phi = \int\limits_S \mathop{d\phi} = \frac{q}{4\pi\epsilon_0}\int\limits_S\mathop{d\Omega} = \frac{q}{4\pi\epsilon_0}\cdot 4\pi = \frac{q}{\epsilon_0}
+                \,\Rightarrow\,\dboxed{\phi=\frac{q}{\epsilon_0}}
+            \end{equation}
+            
+            Con il risultato del'equazione \ref{eqn:flusso_sup_chiusa}, che ci indica mostra il flusso del campo $\vec{E}$, generato da una carica puntiforme $q$, attraverso
+            una superficie chiusa, possiamo studiare il caso di una distribuzione discreta di cariche puntiformi come segue.
+            \begin{gather*}
+                \text{Ricordando che con distribuzioni discrete abbiamo }\\
+                \vec{E} = \sum\vec{E}_i\\
+                \text{Calcoliamo il flusso }\phi\\
+                \phi = \int\limits_S\mathop{d\phi} = \int\limits_S\sum\vec{E}_i\mathop{dS} \,\Rightarrow\, \dboxed{\phi=\frac{\sum q_i}{\epsilon_0}}
+            \end{gather*}
+            
+            \noindent
+            Abbiamo finalmente tutti gli strumenti per vedere e comprendere la seconda delle \emph{equazioni di Maxwell}.
+            \begin{definizione}[Teorema di Gauss]
+                Il flusso del campo elettrico attraverso una qualsiasi superficie chiusa è pari alla somma algebrica delle cariche interne
+                diviso la costante dielettrica del vuoto.
+                \begin{equation}
+                    \boxed{\phi(\vec{E}) = \oint\limits_{\substack{S\\\text{chiusa}\\\text{qualunque}}}\vec{E}\cdot\mathop{d\vec{S}} = \frac{Q_{\text{interna}}}{\epsilon_0}}
+                \end{equation}
+            \end{definizione}
+            \noindent
+            Il teorema di Gauss è \emph{generale}, non è valido solo per il campo elettrostatico, bensì anche per il campo elettrico in condizioni \emph{non stazionarie}!
+            
+            Usiamolo per calcolare il campo $\vec{E}_{el.st.}$ di una carica $q$, giusto per vedere come funziona nella situazione più semplice. Consideriamo quindi una
+            carica, $q$, ed un punto dove calcolare il campo, $\vec{r}$.\\
+            \begin{tikzpicture}
+                \filldraw (0,0) circle (2pt) node[anchor=south west] {q};
+                \draw [-stealth] (0,0) -- (1, -0.6) node[anchor=south] {$\vec{r}$};
+            \end{tikzpicture}\\
+            $\vec{E}(\vec{r})$?\\
+            A questo punto osserviamo una cosa molto importante: siamo in condizioni di \emph{simmetria sferica}. Dato che, per usare il teorema di Gauss, dobbiamo
+            scegliere una superficie chiusa qualunque, questo semplice indizio ci consente di semplificarci la vita usando $S_{\text{Gauss}}=\,$sfera.\\[1em]
+            \begin{tikzpicture}
+                \filldraw (0,0) circle (2pt) node[anchor=south west] {q};
+                \draw [-stealth] (0,0) -- (1, -0.6) node[anchor=south] {$\vec{r}$};
+                \draw [gray, dashed] (0,0) circle (1.2);
+                \draw [gray] (0,-1.2) node[anchor=north] {$S(r)$};
+            \end{tikzpicture}\\
+            Applichiamo quindi il teorema:
+            \begin{align*}
+                \phi(\vec{E}) \;= &\oint\limits_{S(\vec{r})}\vec{E}\cdot\mathop{d\vec{S}} = \oint\limits_{S(\vec{r})}E\cdot\mathop{dS}\;
+                \mbox{\footnotesize ($\vec{u}_r$ e $\hat{n}$ sono paralleli $\Rightarrow\,\vec{u}_r \cdot \hat{n} = 1$)}\\
+                &E(\vec{r})\cdot\oint\limits_{S(\vec{r})}\mathop{dS} = E\cdot4\pi r^2 = \;\frac{q}{\epsilon_0}\\[1em]
+                &\dboxed{E(r) = \frac{q}{4\pi\epsilon_0 r^2}}\\
+                \mbox{\footnotesize Direzione: }& \mbox{\footnotesize radiale.\quad Verso: $q^+$ uscente, $q^-$ entrante}
+            \end{align*}
+            \begin{tikzpicture}
+                \draw [thick, ->] (0,0) -- (0,2.2) node[anchor=south east] {$E(r)$};
+                \draw [thick, ->] (0,0) -- (3.2,0) node[anchor=north west] {$r$};
+                \draw (0.1,1.8) .. controls (0.4,0.7) and (1,0.3) .. (2.8,0.2) node[anchor=south] {$\alpha\frac{1}{r^2}$};
+                \draw [densely dashed] (0.1,1.8) -- (0.07, 2.3);
+                \draw [densely dashed] (2.8,0.2) -- (3.3, 0.17);
+            \end{tikzpicture}
+            
+            
+            
+            
     \chapter{Elettrodinamica}
         In questo capitolo studieremo i fenomeni elettrici in condizioni \emph{non stazionarie}, introducendo la \emph{corrente elettrica} e studiandone il comportamento nei conduttori.
         
@@ -283,6 +542,23 @@
         \end{itemize}
     
     \appendix
+    \chapter{Esercizi}
+    \section{Elettrostatica}
+        \subsection{Superficie sferica con distribuzione superficiale}
+            \begin{wrapfigure}[6]{r}{5cm}
+                \begin{tikzpicture}
+                \draw [gray] (0,0) circle (1.5);
+                \draw [gray] (0,0) -- (1.05,1.05) node[midway, above] {R};
+                \draw [gray] (0.8,-1.4) node[anchor=north] {$q=10^{-9}C$};
+                \end{tikzpicture}
+            \end{wrapfigure}
+            Consideriamo una distribuzione superficiale di carica $q=10^{-9}C$ su una superficie sferica di raggio $R=5cm$.
+            Vogliamo conoscere $E(\vec{r})$ ovunque nello spazio (dentro e fuori la sfera).\\[3em]
+            
+            Dato che stiamo studiando una superficie sferica, possiamo usare come $S_{\text{Gauss}}$ una sfera. Prendiamone dunque una
+            di raggio $r$ ed applichiamo il teorema.
+
+    
     \chapter{Costanti fisiche}
         \begin{table}[h]
             \caption{Principali costanti fisiche.}
