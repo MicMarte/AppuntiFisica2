@@ -474,13 +474,13 @@
             \begin{tikzpicture}
                 \draw [thick, ->] (0,0) -- (0,2.2) node[anchor=south east] {$E(r)$};
                 \draw [thick, ->] (0,0) -- (3.2,0) node[anchor=north west] {$r$};
-                \draw (0.1,1.8) .. controls (0.4,0.7) and (1,0.3) .. (2.8,0.2) node[anchor=south] {$\alpha\frac{1}{r^2}$};
+                \draw (0.1,1.8) .. controls (0.4,0.7) and (1,0.3) .. (2.8,0.2) node[anchor=south] {$\propto\frac{1}{r^2}$};
                 \draw [densely dashed] (0.1,1.8) -- (0.07, 2.3);
                 \draw [densely dashed] (2.8,0.2) -- (3.3, 0.17);
             \end{tikzpicture}
             
-            
-            
+            \bigskip\noindent
+            Fare riferimento all'esercizio \ref{es:1} per un esempio completo riguardo al calcolo di $E$ e $V$.
             
     \chapter{Elettrodinamica}
         In questo capitolo studieremo i fenomeni elettrici in condizioni \emph{non stazionarie}, introducendo la \emph{corrente elettrica} e studiandone il comportamento nei conduttori.
@@ -544,19 +544,94 @@
     \appendix
     \chapter{Esercizi}
     \section{Elettrostatica}
-        \subsection{Superficie sferica con distribuzione superficiale}
+        \subsection{Superficie sferica con distribuzione superficiale}\label{es:1}
             \begin{wrapfigure}[6]{r}{5cm}
                 \begin{tikzpicture}
-                \draw [gray] (0,0) circle (1.5);
-                \draw [gray] (0,0) -- (1.05,1.05) node[midway, above] {R};
-                \draw [gray] (0.8,-1.4) node[anchor=north] {$q=10^{-9}C$};
+                \draw [gray] (0,0) circle (1);
+                \draw [gray] (0,0) -- (0.7,0.7) node[midway, above] {R};
+                \draw [gray] (0.5,-0.9) node[anchor=north] {$q=10^{-9}C$};
                 \end{tikzpicture}
             \end{wrapfigure}
             Consideriamo una distribuzione superficiale di carica $q=10^{-9}C$ su una superficie sferica di raggio $R=5cm$.
-            Vogliamo conoscere $E(\vec{r})$ ovunque nello spazio (dentro e fuori la sfera).\\[3em]
+            Vogliamo conoscere $E(\vec{r})$ e $V(\vec{r})$ ovunque nello spazio (dentro e fuori la sfera).\\
             
             Dato che stiamo studiando una superficie sferica, possiamo usare come $S_{\text{Gauss}}$ una sfera. Prendiamone dunque una
-            di raggio $r$ ed applichiamo il teorema.
+            di raggio $r$ ed applichiamo il teorema.\\
+            
+            \begin{tikzpicture}
+                \draw (0,0) circle (1.5);
+                \draw [dashed,gray] (0,0) circle (1.1);
+                \draw [dashed,gray] (0,0) circle (1.8);
+                \draw (0,0) -- (1.05,1.05) node[midway, above] {R};
+                \draw [gray] (0,0) -- (0,-1.1) node[midway, left] {r};
+                \draw [gray] (0,0) -- (1.6,-0.75) node[midway, above] {r};
+            \end{tikzpicture}
+            
+            Per Gauss:
+            \begin{equation*}
+                \phi(\vec{E}) = \oint\limits_{S(r)}=E(r)\cdot\oint\limits_{S(r)}\mathop{dS} = E(r)\cdot\ 4\pi r^2 = \frac{Q_{\text{int}}}{\epsilon_0}
+            \end{equation*}
+            da cui:
+            \begin{itemize}
+                \item[($r<R$)]{
+                    La somma delle cariche interne alla superficie di Gauss (raggio $r$) è nulla, ovvero $q=0$.
+                    Da ciò ricaviamo che:
+                    \begin{equation*}
+                        E(r)\cdot 4\pi r^2 = \frac{0}{\epsilon_0}\,\Rightarrow\,E(r) = 0
+                    \end{equation*}
+                }
+                \item[($r>R$)]{
+                    La somma delle cariche interne alla superficie di Gauss è data dalla carica $q$ distribuita sulla
+                    superficie della sfera di raggio $R$, perciò:
+                    \begin{equation*}
+                    E(r)\cdot 4\pi r^2 = \frac{q}{\epsilon_0}\,\Rightarrow\,E(r) = \frac{q}{4\pi\epsilon_0 r^2}
+                    \end{equation*}
+                }
+                \item[($r=R$)]{
+                    In particolare, possiamo dire che appena fuori dalla superficie della sfera di raggio $R$, il campo misurato è pari a:
+                    \begin{equation*}
+                    E(R)\cdot 4\pi R^2 = \frac{q}{\epsilon_0}\,\Rightarrow\,E(R) = \frac{q}{4\pi\epsilon_0 R^2} = \frac{\sigma}{\epsilon_0}
+                    \;\mbox{ con }\sigma=\frac{q}{\mbox{sup.sfera}}
+                    \end{equation*}
+                }
+            \end{itemize}
+            Per precisione e completezza, calcoliamo anche la densità di carica superficiale $\sigma$.
+            \begin{equation*}
+                \sigma=\frac{q}{S}=\frac{q}{4\pi R^2} = \frac{10^{-9}}{4\pi 25\cdot 10^{-4}} \approx 8\cdot 10^{-6}\, C/m^2
+            \end{equation*}
+            
+            \bigskip
+            Studiamo ora il potenziale del campo. Dato che esso è definito a meno di una costante, decidiamo di considerare come costante $V(\infty) = 0$.
+            \begin{gather*}
+                \text{Possiamo calcolare la differenza di potenziale come segue:}\\
+                \Delta V = V(r_2) - V(r_1) = -\int_{r_1}^{r_2} \vec{E}\cdot\mathop{d\vec{r}} = -\int_{r_1}^{r_2}\frac{q}{4\pi\epsilon_0 r^2}\mathop{dr}\\
+                \frac{q}{4\pi\epsilon_0 r}\bigg|_{r_1}^{r_2} = \frac{q}{4\pi\epsilon_0 r_2} - \dboxed{\frac{q}{4\pi\epsilon_0 r_1}}\longrightarrow\mbox{ (cost)} \\
+                \text{Il potenziale in $r > R$ in questo modo risulta:}\\
+                V(r) = \frac{q}{4\pi\epsilon_0 r} + \mbox{cost}\\
+                \text{Non siamo convinti? Ricalcoliamo ricordando di porre $V(\infty) = 0$:}\\
+                V(r) = V_\infty -\int_{\infty}^{r}E(r)\cdot\mathop{dr} = 0 - \int_{\infty}^{r}\frac{q}{4\pi\epsilon_0 r^2}\cdot\mathop{dr}=\frac{q}{4\pi\epsilon_0 r}\\
+                \text{Il potenziale in $r<R$ rimane invariato in quanto, per l'assenza di campo $E$, $\Delta V = 0$:}\\
+                \Delta V = 0 \longrightarrow V = cost \longrightarrow V(r) = V(R) \quad\mbox{per } r<R
+            \end{gather*}
+            
+            \noindent
+            Mostriamo graficamente l'andamento del campo elettrostatico e del potenziale.\\
+            
+            \begin{tikzpicture}
+                % Campo elettrostatico
+                \draw [thick, ->] (0,0) -- (0,3) node[anchor=south east] {E};
+                \draw [thick, ->] (0,0) -- (4,0) node[anchor=north] {r};
+                \draw [dashed] (1,3) -- (1,0) node[anchor=north] {R};
+                \draw [thick,red] (0,0) -- (1,0);
+                \draw [thick,red] (1,2) .. controls (1.5, 0.6) and (2, 0.3) .. (3.8, 0.2) node[anchor=south] {$\propto\frac{1}{r^2}$};
+                
+                % Potenziale
+                \draw [thick, ->] (6,0) -- (6,3) node[anchor=south east] {V};
+                \draw [thick, ->] (6,0) -- (10,0) node[anchor=north] {r};
+                \draw [dashed] (7,3) -- (7,0) node[anchor=north] {R};
+                \draw [thick,red] (6,2) -- (7,2);
+                \draw [thick,red] (7,2) .. controls (7.5, 1.1) and (8.5, 0.6) .. (9.8, 0.2) node[anchor=south] {$\propto\frac{1}{r}$};
+            \end{tikzpicture}
 
     
     \chapter{Costanti fisiche}
